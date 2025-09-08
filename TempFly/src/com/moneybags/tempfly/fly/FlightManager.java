@@ -449,6 +449,27 @@ public class FlightManager implements Listener, Reloadable {
 		if (user == null) {
 			return;
 		}
+		
+		if (e.isCancelled()) {
+			Console.debug("------teleport cancelled------", "--|> " + e.getPlayer().getUniqueId());
+			if (user.hasFlightEnabled()) {
+				List<FlightResult> worldResults = inquireFlight(user, e.getFrom().getWorld());
+				boolean canFlyInCurrentWorld = true;
+				for (FlightResult result : worldResults) {
+					if (!result.isAllowed()) {
+						canFlyInCurrentWorld = false;
+						break;
+					}
+				}
+				
+				if (!canFlyInCurrentWorld) {
+					Console.debug("------disabling flight in disabled world------", "--|> " + e.getPlayer().getUniqueId());
+					user.disableFlight(1, true);
+				}
+			}
+			return;
+		}
+		
 		// Let's grab the fly state before checking enabled state.
 		boolean wasFlying = user.getPlayer().isFlying();
 		user.resetIdleTimer();
