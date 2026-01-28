@@ -100,10 +100,17 @@ public class FlightEnvironment implements RequirementProvider {
 	 * 
 	 */
 	
-	
+	private boolean matches(String worldName, List<String> patterns) {
+		for (String pattern : patterns) {
+			if (worldName.equals(pattern) || worldName.startsWith(pattern)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public boolean isDisabled(World world) {
-		return blackWorlds.contains(world.getName());
+		return matches(world.getName(), blackWorlds);
 	}
 	
 	public boolean isDisabled(CompatRegion region) {
@@ -121,7 +128,7 @@ public class FlightEnvironment implements RequirementProvider {
 	 */
 
 	public boolean isWhitelisted(World world) {
-		return whiteWorlds.size() == 0 || whiteWorlds.contains(world.getName());
+		return whiteWorlds.size() == 0 || matches(world.getName(), whiteWorlds);
 	}
 	
 	public boolean isWhitelisted(CompatRegion region) {
@@ -139,7 +146,7 @@ public class FlightEnvironment implements RequirementProvider {
 	 */
 	
 	public boolean isInfinite(World world) {
-		return freeWorlds.contains(world.getName());
+		return matches(world.getName(), freeWorlds);
 	}
 	
 	public boolean isInfinite(CompatRegion region) {
@@ -233,7 +240,7 @@ public class FlightEnvironment implements RequirementProvider {
 				}
 			}
 		}
-		return !V.disabledWorlds.contains(loc.getWorld().getName());
+		return !matches(loc.getWorld().getName(), blackWorlds);
 	}
 	
 	/**
